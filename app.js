@@ -22,12 +22,17 @@ app.get('/greetings/:name', (req, res) => {
     res.render('greetings', {name: name})
 })
 
-app.get('/', function (req, res) {
-  giphy.search(req.query.term, function (err, response) {
-    res.render('home', {gifs: response.data})
-    console.log({gifs: response.data})
-  });
-});
+app.get('/', (req, res) => {
+    if (req.query.term) {
+        giphy.search(req.query.term, (req, response) => {
+            res.render('home', {gifs: response.data})
+        })
+    } else {
+        giphy.trending((err, response) => {
+            res.render('home', {gifs: response.data})
+        })
+    }
+})
 
 app.listen(3000, function () {
     console.log('GIf Search listening on localhost:3000!')
